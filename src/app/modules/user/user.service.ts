@@ -120,7 +120,6 @@ const updateProfile = async (
 const updateUserStatus = async (userId: string) => {
    const user = await User.findById(userId);
 
-   console.log('comes here');
    if (!user) {
       throw new AppError(StatusCodes.NOT_FOUND, 'User is not found');
    }

@@ -82,7 +82,6 @@ const validatePaymentService = async (tran_id: string): Promise<boolean> => {
             tran_id
         });
 
-        console.log(validationResponse.element);
 
         let data;
 
@@ -133,7 +132,6 @@ const validatePaymentService = async (tran_id: string): Promise<boolean> => {
         await session.commitTransaction();
         session.endSession();
 
-        console.log("email")
 
         const pdfBuffer = await generateOrderInvoicePDF(updatedOrder);
         const emailContent = await EmailHelper.createEmailContent(

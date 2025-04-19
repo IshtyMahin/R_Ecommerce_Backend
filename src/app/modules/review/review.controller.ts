@@ -5,7 +5,6 @@ import { ReviewServices } from './review.service';
 
 const createReview = catchAsync(async (req, res) => {
    const user = req.user;
-   console.log(req.body, 'req.body');
    
    const review = req.body;
    const result = await ReviewServices.createReview(review, user);

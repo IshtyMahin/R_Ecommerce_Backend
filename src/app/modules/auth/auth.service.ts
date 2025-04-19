@@ -75,14 +75,20 @@ const loginUser = async (payload: IAuth) => {
 };
 
 const refreshToken = async (token: string) => {
-
+   if (!token) {
+      throw new AppError(StatusCodes.FORBIDDEN, 'Refresh Token is required');
+   }
+   
    let verifiedToken = null;
    try {
+      
       verifiedToken = verifyToken(
          token,
          config.jwt_refresh_secret as Secret
       );
+      
    } catch (err) {
+      
       throw new AppError(StatusCodes.FORBIDDEN, 'Invalid Refresh Token');
    }
 

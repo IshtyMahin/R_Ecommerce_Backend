@@ -60,7 +60,6 @@ const createOrder = async (
         tran_id: transactionId,
         
       });
-      console.log(paymentData, "paymentData");
       result = { 
         success: true,
         message: "Payment initiated",
@@ -78,7 +77,6 @@ const createOrder = async (
         }
       };
     }
-    console.log(result, "result");
     
     await session.commitTransaction();
     return result;

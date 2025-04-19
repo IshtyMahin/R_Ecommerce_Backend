@@ -83,7 +83,6 @@ const getAllReviews = async (query: Record<string, unknown>) => {
    const result = await brandQuery.modelQuery;
    const meta = await brandQuery.countTotal();
 
-   console.log(result,meta);
    
 
    return {
