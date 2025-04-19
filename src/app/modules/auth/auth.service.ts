@@ -224,7 +224,7 @@ const verifyOTP = async (
    await user.save();
 
    const resetToken = jwt.sign({ email }, config.jwt_pass_reset_secret as string, {
-      expiresIn: config.jwt_pass_reset_expires_in,
+      expiresIn: parseInt(config.jwt_pass_reset_expires_in as string, 10),
    });
 
    // Return the reset token

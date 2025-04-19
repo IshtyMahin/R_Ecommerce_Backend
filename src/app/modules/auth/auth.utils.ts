@@ -4,10 +4,10 @@ import { IJwtPayload } from './auth.interface';
 export const createToken = (
     jwtPayload: IJwtPayload,
     secret: Secret,
-    expiresIn: string,
+    expiresIn: string | number,
 ) => {
     return jwt.sign(jwtPayload, secret, {
-        expiresIn,
+        expiresIn: typeof expiresIn === 'string' ? parseInt(expiresIn, 10) : expiresIn,
     });
 };
 
