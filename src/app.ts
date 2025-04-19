@@ -45,8 +45,8 @@ app.get("/", (req: Request, res: Response, next: NextFunction) => {
       )} minutes`,
     },
     developerContact: {
-      email: "fahimfiroz.ph@gmail.com",
-      website: "https://programming-hero.com",
+      email: "ishtiaquddin119@gmail.com",
+      website: "https://ishtiaquddin.vercel.app",
     },
   });
 });
@@ -56,4 +56,4 @@ app.use(globalErrorHandler);
 //Not Found
 app.use(notFound);
 
-export default app; // Export the app for use in server.ts
+export default app; 
