@@ -13,12 +13,16 @@ const router = Router();
 router.get('/', ProductController.getAllProduct);
 router.get('/trending', ProductController.getTrendingProducts);
 router.get('/:productId', ProductController.getSingleProduct);
+router.get('/ar-enabled', ProductController.getAREnabledProducts); // New route
 
 // Admin-only routes
 router.post(
    '/',
    auth(UserRole.ADMIN),
-   multerUpload.fields([{ name: 'images' }]),
+   multerUpload.fields([
+     { name: 'images', maxCount: 10 },
+     { name: 'arModel', maxCount: 1 }
+   ]),
    parseBody,
    validateRequest(productValidation.createProductValidationSchema),
    ProductController.createProduct
@@ -27,7 +31,10 @@ router.post(
 router.patch(
    '/:productId',
    auth(UserRole.ADMIN),
-   multerUpload.fields([{ name: 'images' }]),
+   multerUpload.fields([
+     { name: 'images', maxCount: 10 },
+     { name: 'arModel', maxCount: 1 }
+   ]),
    parseBody,
    validateRequest(productValidation.updateProductValidationSchema),
    ProductController.updateProduct

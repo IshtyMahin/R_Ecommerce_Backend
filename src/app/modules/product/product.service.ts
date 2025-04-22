@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/appError';
-import { IImageFiles } from '../../interface/IImageFile';
 import { IProduct } from './product.interface';
 import { Category } from '../category/category.model';
 import { Product } from './product.model';
@@ -8,12 +7,19 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import { Order } from '../order/order.model';
 import { Review } from '../review/review.model';
 import { FlashSale } from '../flashSell/flashSale.model';
+import { Express } from 'express';
+
+export interface IImageFiles {
+  images?: Express.Multer.File[];
+  arModel?: Express.Multer.File[];
+}
 
 const createProduct = async (
   productData: Partial<IProduct>,
-  productImages: IImageFiles
+  productFiles: IImageFiles
 ) => {
-  const { images } = productImages;
+  const { images, arModel } = productFiles;
+  
   if (!images || images.length === 0) {
     throw new AppError(
       StatusCodes.BAD_REQUEST,
@@ -22,6 +28,12 @@ const createProduct = async (
   }
 
   productData.imageUrls = images.map((image) => image.path);
+
+  // Handle AR model upload
+  if (arModel && arModel.length > 0) {
+    productData.arModel = arModel[0].path;
+    productData.arAvailable = true;
+  }
 
   const isCategoryExists = await Category.findById(productData.category);
   if (!isCategoryExists) {
@@ -202,9 +214,9 @@ const getSingleProduct = async (productId: string) => {
 const updateProduct = async (
   productId: string,
   payload: Partial<IProduct>,
-  productImages: IImageFiles
+  productFiles: IImageFiles
 ) => {
-  const { images } = productImages;
+  const { images, arModel } = productFiles;
 
   const product = await Product.findById(productId);
   if (!product) {
@@ -213,6 +225,16 @@ const updateProduct = async (
 
   if (images && images.length > 0) {
     payload.imageUrls = images.map((image) => image.path);
+  }
+
+  // Handle AR model update
+  if (arModel && arModel.length > 0) {
+    payload.arModel = arModel[0].path;
+    payload.arAvailable = true;
+  } else if (payload.arModel === null) {
+    // Handle AR model removal
+    payload.arModel = undefined;
+    payload.arAvailable = false;
   }
 
   return await Product.findByIdAndUpdate(productId, payload, { new: true });
@@ -227,6 +249,13 @@ const deleteProduct = async (productId: string) => {
   return await Product.findByIdAndDelete(productId);
 };
 
+// Add new method for AR-enabled products
+const getAREnabledProducts = async () => {
+  return await Product.find({ arAvailable: true })
+    .select('name imageUrls arModel arScale arPosition')
+    .lean();
+};
+
 export const ProductService = {
   createProduct,
   getAllProduct,
@@ -234,4 +263,5 @@ export const ProductService = {
   getSingleProduct,
   updateProduct,
   deleteProduct,
+  getAREnabledProducts
 };

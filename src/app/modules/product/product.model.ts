@@ -49,7 +49,6 @@ const productSchema = new Schema<IProduct>(
          type: Boolean,
          default: true,
       },
-   
       brand: {
          type: Schema.Types.ObjectId,
          ref: 'Brand',
@@ -78,15 +77,31 @@ const productSchema = new Schema<IProduct>(
          type: [String],
          default: [],
       },
+      arModel: {
+         type: String,
+         default: null
+      },
+      arScale: {
+         type: Number,
+         default: 1,
+         min: 0.1,
+         max: 10
+      },
+      arPosition: {
+         x: { type: Number, default: 0 },
+         y: { type: Number, default: 0.5 },
+         z: { type: Number, default: 0 }
+      },
+      arAvailable: {
+         type: Boolean,
+         default: false
+      }
    },
    {
       timestamps: true,
-      // toJSON: { virtuals: true },
-      // toObject: { virtuals: true }
    }
 );
 
-// Middleware to auto-generate the slug before saving
 productSchema.pre<IProduct>('validate', function (next) {
    if (this.isModified('name') && !this.slug) {
       this.slug = this.name
@@ -105,7 +120,7 @@ productSchema.methods.calculateOfferPrice = async function () {
       return this.price - discount;
    }
 
-   return null; // or you can return 0 or another default value
+   return null;
 };
 
 export const Product = model<IProduct>('Product', productSchema);

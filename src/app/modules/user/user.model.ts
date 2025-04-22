@@ -7,71 +7,79 @@ import { StatusCodes } from 'http-status-codes';
 
 // Create the User schema based on the interface
 const userSchema = new Schema<IUser, UserModel>(
-   {
-      name: {
-         type: String,
-         required: true,
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: [UserRole.ADMIN, UserRole.USER],
+      default: UserRole.USER,
+    },
+    hasShop: {
+      type: Boolean,
+      default: false,
+    },
+    photo: {
+      type: String,
+      default: '', 
+    },
+    phoneNo: {
+      type: String,
+      default: null,},
+    clientInfo: {
+      device: {
+        type: String,
+        enum: ['pc', 'mobile'],
+        required: true,
       },
-      email: {
-         type: String,
-         required: true,
-         unique: true,
-         lowercase: true,
+      browser: {
+        type: String,
+        required: true,
       },
-      password: {
-         type: String,
-         required: true,
+      ipAddress: {
+        type: String,
+        required: true,
       },
-      role: {
-         type: String,
-         enum: [UserRole.ADMIN, UserRole.USER],
-         default: UserRole.USER,
+      pcName: {
+        type: String,
       },
-      hasShop: {
-         type: Boolean,
-         default: false, // Default value is false
+      os: {
+        type: String,
       },
-      clientInfo: {
-         device: {
-            type: String,
-            enum: ['pc', 'mobile'],
-            required: true,
-         },
-         browser: {
-            type: String,
-            required: true,
-         },
-         ipAddress: {
-            type: String,
-            required: true,
-         },
-         pcName: {
-            type: String,
-         },
-         os: {
-            type: String,
-         },
-         userAgent: {
-            type: String,
-         },
+      userAgent: {
+        type: String,
       },
-      lastLogin: {
-         type: Date,
-         default: Date.now,
-      },
-      isActive: {
-         type: Boolean,
-         default: true,
-      },
-      otpToken: {
-         type: String,
-         default: null
-      },
-   },
-   {
-      timestamps: true,
-   }
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    otpToken: {
+      type: String,
+      default: null,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
+
 
 userSchema.pre('save', async function (next) {
    const user = this;

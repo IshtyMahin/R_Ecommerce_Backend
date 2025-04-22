@@ -2,7 +2,6 @@ import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import { cloudinaryUpload } from './cloudinary.config';
 
-
 const removeExtension = (filename: string) => {
     return filename.split('.').slice(0, -1).join('.');
 };
@@ -16,7 +15,6 @@ const storage = new CloudinaryStorage({
                     '-' + Date.now() +
                     '-' + file.fieldname +
                     '-' + removeExtension(file.originalname);
-                console.log('Generated public_id:', id);
                 return id;
             } catch (error) {
                 console.error('Error generating public_id:', error);
@@ -28,14 +26,22 @@ const storage = new CloudinaryStorage({
 
 export const multerUpload = multer({ 
     storage: storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { 
+        fileSize: 20 * 1024 * 1024, // 20MB limit for AR models
+        files: 11 // 10 images + 1 AR model
+    },
     fileFilter: (req, file, cb) => {
-        console.log('Incoming file:', file);
-        // Accept images only
-        if (!file.mimetype.match(/^image\/(jpeg|png|gif|webp)$/)) {
-            console.log('Invalid file type:', file.mimetype);
-            return cb(new Error('Only image files are allowed!'));
+        const allowedImageTypes = /^image\/(jpeg|png|gif|webp)$/;
+        const allowedModelTypes = /^(model\/gltf-binary|model\/gltf\+json|application\/octet-stream)$/;
+        
+        if (file.fieldname === 'images' && !file.mimetype.match(allowedImageTypes)) {
+            return cb(new Error('Only image files (JPEG, PNG, GIF, WEBP) are allowed for product images!'));
         }
+        
+        if (file.fieldname === 'arModel' && !file.mimetype.match(allowedModelTypes)) {
+            return cb(new Error('Only GLB/GLTF 3D model files are allowed for AR models!'));
+        }
+        
         cb(null, true);
     }
 });

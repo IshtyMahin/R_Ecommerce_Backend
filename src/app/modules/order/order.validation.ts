@@ -19,6 +19,9 @@ export const orderValidation = {
     })
   }),
   updateStatus: z.object({
-    status: z.enum(['Pending', 'Processing', 'Completed', 'Cancelled']),
+    body: z.object({
+      status: z.enum(['Pending', 'Processing', 'Completed', 'Cancelled']),
+    })
+    
   }),
 };

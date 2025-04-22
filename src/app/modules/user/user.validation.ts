@@ -41,13 +41,8 @@ const customerInfoValidationSchema = z.object({
          address: z
             .string()
             .optional(),
-         photo: z
-            .string()
-            .regex(
-               /^(http(s)?:\/\/.*\.(?:png|jpg|jpeg))$/,
-               'Invalid photo URL format. Must be a valid image URL.'
-            )
-            .optional(),
+         photo: z.string().optional(),
+
       })
       .strict(),
 });
